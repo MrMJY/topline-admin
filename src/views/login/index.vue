@@ -8,7 +8,7 @@
       <div class="form-body">
         <el-form ref="form" :model="formData">
           <el-form-item>
-            <el-input v-model="formData.mobole" placeholder="手机号"></el-input>
+            <el-input v-model="formData.mobile" placeholder="手机号"></el-input>
           </el-form-item>
           <el-row :gutter="20">
             <el-col :span="14">
@@ -39,22 +39,87 @@
 </template>
 
 <script>
+import '@/vender/gt.js';
+import axios from 'axios';
+
 export default {
   name: 'LoginModel',
   data () {
     return {
       formData: {
-        mobile: '',
+        mobile: '17866637565',
         code: ''
-      }
+      },
+      captchaObj: null
     };
   },
   methods: {
     sendCode () {
       console.log('submit!');
+      axios({
+        method: 'GET',
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${
+          this.formData.mobile
+        }`
+      }).then(res => {
+        if (this.captchaObj) {
+          return this.captchaObj.verify();
+        }
+        // 请检测data的数据结构， 保证data.gt, data.challenge, data.success有值
+        let { gt, challenge, success } = res.data.data;
+        window.initGeetest(
+          {
+            // 以下配置参数来自服务端 SDK
+            gt,
+            challenge,
+            offline: !success,
+            new_captcha: true,
+            product: 'bind'
+          },
+          captchaObj => {
+            // 这里可以调用验证实例 captchaObj 的实例方法
+            this.captchaObj = captchaObj;
+            captchaObj
+              .onReady(function () {
+                // 验证码ready之后才能调用verify方法显示验证码
+                captchaObj.verify();
+              })
+              .onSuccess(() => {
+                this.captchaObj = null;
+                let {
+                  geetest_challenge: challenge,
+                  geetest_validate: validate,
+                  geetest_seccode: seccode
+                } = captchaObj.getValidate();
+                axios({
+                  method: 'GET',
+                  url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${
+                    this.formData.mobile
+                  }`,
+                  params: {
+                    challenge,
+                    validate,
+                    seccode
+                  }
+                }).then(res => {
+                  console.log(res);
+                });
+              })
+              .onError(function () {});
+          }
+        );
+      });
     },
     submitLogin () {
-      console.log('login');
+      axios({
+        method: 'POST',
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        data: this.formData
+      }).then(res => {
+        this.$router.push({
+          name: 'home'
+        });
+      });
     }
   }
 };
