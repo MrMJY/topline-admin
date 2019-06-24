@@ -9,7 +9,8 @@
            active-text-color="#ffd04b">
     <el-menu-item index="/">
       <template slot="title">
-        <i class="iconfont iconhome f24"></i>
+        <i class="iconfont iconhome f24"
+           style="margin-right:1px"></i>
         <span slot="title">首页</span>
       </template>
     </el-menu-item>

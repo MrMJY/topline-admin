@@ -58,7 +58,6 @@
 
 <script>
 import '@/vender/gt.js';
-import axios from 'axios';
 
 export default {
   name: 'LoginModel',
@@ -129,9 +128,9 @@ export default {
     },
     login () {
       this.isLogin = true;
-      axios({
+      this.$http({
         method: 'POST',
-        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        url: '/authorizations',
         data: this.formData
       })
         .then(res => {
@@ -155,9 +154,9 @@ export default {
     code () {
       this.isSendCode = true;
       this.init_mobile = this.formData.mobile;
-      axios({
+      this.$http({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${
+        url: `/captchas/${
           this.formData.mobile
         }`
       }).then(res => {
@@ -191,9 +190,9 @@ export default {
                 let secondCount = 60;
                 this.isSendCode = true;
                 this.btn_text = secondCount + 's后可重新发送';
-                axios({
+                this.$http({
                   method: 'GET',
-                  url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${
+                  url: `/sms/codes/${
                     this.formData.mobile
                   }`,
                   params: {
