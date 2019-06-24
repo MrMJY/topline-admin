@@ -8,7 +8,7 @@
         <span class="el-dropdown-link">
           <img width="30"
                src="http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi">
-          18801185985<i class="el-icon-arrow-down el-icon--right"></i>
+          17866637565<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>账户设置</el-dropdown-item>
@@ -33,6 +33,9 @@ export default {
   display: flex;
   width: 100%;
   align-items: center;
+  .el-col-14 {
+    font-size: 14px;
+  }
 }
 .el-dropdown-link {
   display: flex;
@@ -41,6 +44,7 @@ export default {
   color: #409eff;
   img {
     border-radius: 50%;
+    margin-right: 5px;
   }
 }
 .el-icon-arrow-down {

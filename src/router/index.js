@@ -8,10 +8,16 @@ export default new Router({
     path: '/',
     component: () => import('@/views/layout'),
     children: [{
-      name: 'home',
+      name: 'AppHome',
       path: '',
       component: () => import('@/views/home')
-    }]
+    },
+    {
+      name: 'AppPublish',
+      path: '/publish',
+      component: () => import('@/views/publish')
+    }
+    ]
   },
   {
     name: 'login',

@@ -3,53 +3,50 @@
   <div class="login-model">
     <div class="login-form">
       <div class="form-header">
-        <img src="./logo_index.png" alt="黑马头条" />
+        <img src="./logo_index.png"
+             alt="黑马头条" />
       </div>
       <div class="form-body">
-        <el-form ref="formData" :rules="rules" :model="formData">
+        <el-form ref="formData"
+                 status-icon
+                 :rules="rules"
+                 :model="formData">
           <el-form-item prop="mobile">
-            <el-input v-model="formData.mobile" placeholder="手机号"></el-input>
+            <el-input v-model="formData.mobile"
+                      placeholder="手机号"></el-input>
           </el-form-item>
           <el-row :gutter="20">
             <el-col :span="14">
               <el-form-item prop="code">
-                <el-input
-                  v-model="formData.code"
-                  placeholder="验证码"
-                ></el-input>
+                <el-input v-model="formData.code"
+                          placeholder="验证码"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="10">
               <el-form-item>
-                <el-button
-                  class="btn-code"
-                  type="primary"
-                  v-text="btn_text"
-                  @click="sendCode"
-                  :disabled="this.isSendCode"
-                >
+                <el-button class="btn-code"
+                           type="primary"
+                           v-text="btn_text"
+                           @click="sendCode"
+                           :disabled="this.isSendCode">
                 </el-button>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item size="mini" prop="agree">
+          <el-form-item size="mini"
+                        prop="agree">
             <el-checkbox v-model="formData.agree"></el-checkbox>
-            <span
-              >我已阅读并同意<a href="#">用户协议</a>和<a href="#"
-                >隐私条款</a
-              ></span
-            >
+            <span>我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
           </el-form-item>
           <el-form-item>
-            <el-button
-              class="btn-login"
-              type="primary"
-              :loading="isLogin"
-              @click="submitLogin"
-            >
+            <el-button class="btn-login"
+                       type="primary"
+                       :loading="isLogin"
+                       @click="submitLogin">
               登录
             </el-button>
-            <div v-if="login_info" class="el-form-item__error login-info">
+            <div v-if="login_info"
+                 class="el-form-item__error login-info">
               用户名或密码错误
             </div>
           </el-form-item>

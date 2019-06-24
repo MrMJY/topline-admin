@@ -1,56 +1,84 @@
-<!--  -->
+<!-- 侧边栏组件 -->
 <template>
   <el-menu default-active="2"
-           class="el-menu-vertical-demo"
+           router
            @open="handleOpen"
            @close="handleClose"
            background-color="#545c64"
            text-color="#fff"
            active-text-color="#ffd04b">
-    <el-menu-item index="1">
+    <el-menu-item index="/">
       <template slot="title">
-        <i class="el-icon-location"></i>
+        <i class="iconfont iconhome f24"></i>
         <span slot="title">首页</span>
       </template>
     </el-menu-item>
     <el-submenu index="2">
       <template slot="title">
-        <i class="el-icon-menu"></i>
+        <i class="iconfont iconcontent f18"
+           style="margin-right: 3px;margin-left: 4px;"></i>
         <span>内容管理</span>
       </template>
       <el-menu-item-group>
-        <el-menu-item index="2-1">发布内容</el-menu-item>
-        <el-menu-item index="2-2">内容列表</el-menu-item>
-        <el-menu-item index="2-3">评论列表</el-menu-item>
-        <el-menu-item index="2-4">素材管理</el-menu-item>
+        <el-menu-item index="/publish">
+          <i class="iconfont iconeditorpublish f18"
+             style="margin-right:3px"></i>
+          <span>发布</span>
+        </el-menu-item>
+        <el-menu-item index="/article">
+          <i class="iconfont iconicon-articles f16"
+             style="margin-left:1px;margin-right:4px"></i>
+          <span>内容列表</span>
+        </el-menu-item>
+        <el-menu-item index="/comment">
+          <i class="iconfont iconsymbols f14"
+             style="margin-left:3px;margin-right:5px"></i>
+          <span>评论列表</span>
+        </el-menu-item>
+        <el-menu-item index="/image">
+          <i class="iconfont iconsucai f16 mr"
+             style="margin:0 3px"></i>
+          <span>素材管理</span>
+        </el-menu-item>
       </el-menu-item-group>
     </el-submenu>
-    <el-submenu index="3">
+    <el-submenu index="/fans">
       <template slot="title">
         <i class="el-icon-document"></i>
         <span>粉丝管理</span>
       </template>
       <el-menu-item-group>
-        <el-menu-item index="3-1">图文数据</el-menu-item>
-        <el-menu-item index="3-2">粉丝概况</el-menu-item>
-        <el-menu-item index="3-3">粉丝画像</el-menu-item>
-        <el-menu-item index="3-4">粉丝列表</el-menu-item>
+        <el-menu-item index="3-1">
+          <i class="iconfont"></i>
+          <span>图文数据</span>
+        </el-menu-item>
+        <el-menu-item index="/fans/overview">
+          <i class="iconfont"></i>
+          <span>粉丝概况</span>
+        </el-menu-item>
+        <el-menu-item index="/fans/portrayal">
+          <i class="iconfont"></i>
+          <span>粉丝画像</span>
+        </el-menu-item>
+        <el-menu-item index="/fans/list">
+          <i class="iconfont"></i>
+          <span>粉丝列表</span>
+        </el-menu-item>
       </el-menu-item-group>
     </el-submenu>
-    <el-menu-item index="4">
-      <i class="el-icon-setting"></i>
-      <span slot="title">导航四</span>
+    <el-menu-item index="/account">
+      <i class="iconfont iconicon_account f18"
+         style="margin:0 5px"></i>
+      <span slot="title">账户设置</span>
     </el-menu-item>
   </el-menu>
 </template>
 
 <script>
 export default {
-  components: {},
   data () {
     return {};
   },
-  computed: {},
   methods: {
     handleOpen (key, keyPath) {
       console.log(key, keyPath);
