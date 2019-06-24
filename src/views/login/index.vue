@@ -136,7 +136,7 @@ export default {
         .then(res => {
           this.isLogin = false;
           this.login_info = false;
-          window.localStorage.setItem('user-info', JSON.stringify(res.data.data));
+          window.localStorage.setItem('user-info', JSON.stringify(res));
           this.$message({
             showClose: true,
             message: '登录成功',
@@ -161,7 +161,7 @@ export default {
         }`
       }).then(res => {
         // 请检测data的数据结构， 保证data.gt, data.challenge, data.success有值
-        let { gt, challenge, success } = res.data.data;
+        let { gt, challenge, success } = res;
         window.initGeetest(
           {
             // 以下配置参数来自服务端 SDK
