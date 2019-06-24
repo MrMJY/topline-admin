@@ -7,8 +7,8 @@
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
           <img width="30"
-               src="http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi">
-          17866637565<i class="el-icon-arrow-down el-icon--right"></i>
+               :src="userInfo.photo">
+          {{userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>账户设置</el-dropdown-item>
@@ -22,7 +22,12 @@
 <script>
 export default {
   data () {
-    return {};
+    return {
+      userInfo: null
+    };
+  },
+  created () {
+    this.userInfo = JSON.parse(window.localStorage.getItem('user-info'));
   },
   methods: {}
 };

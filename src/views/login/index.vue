@@ -137,16 +137,14 @@ export default {
         .then(res => {
           this.isLogin = false;
           this.login_info = false;
-          console.log(res.data);
+          window.localStorage.setItem('user-info', JSON.stringify(res.data.data));
           this.$message({
             showClose: true,
             message: '登录成功',
             type: 'success',
             centern: true
           });
-          this.$router.push({
-            name: 'home'
-          });
+          this.$router.push('/');
         })
         .catch(err => {
           this.isLogin = false;
