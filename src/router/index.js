@@ -19,6 +19,11 @@ const router = new Router({
       name: 'AppPublish',
       path: '/publish',
       component: () => import('@/views/publish')
+    },
+    {
+      name: 'ArtcleList',
+      path: '/article',
+      component: () => import('@/views/articles')
     }
     ]
   },

@@ -14,7 +14,7 @@
         <span slot="title">首页</span>
       </template>
     </el-menu-item>
-    <el-submenu index="2">
+    <el-submenu index="/article">
       <template slot="title">
         <i class="iconfont iconcontent f18"
            style="margin-right: 3px;margin-left: 4px;"></i>

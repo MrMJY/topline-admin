@@ -41,9 +41,6 @@ export default {
       border: 0;
     }
   }
-  .el-header {
-    background-color: #aec0d1;
-  }
   .el-main {
     background-color: #ddd;
   }
