@@ -26,8 +26,7 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-// Axios 响应拦截器
-// 身份验证、错误处理
+// Axios 响应拦截器// 身份验证、错误处理
 axios.interceptors.response.use(response => {
   return response.data.data;
 }, error => {
