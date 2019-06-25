@@ -57,7 +57,6 @@
 </template>
 
 <script>
-// {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjEzODU3ODgsInVzZXJfaWQiOjExNDE5NzA5NjkxMDM5NTgwMTYsInJlZnJlc2giOmZhbHNlLCJ2ZXJpZmllZCI6dHJ1ZX0.5NvfmNr_Vyxm90kq2hWv7a9v48AsWYgCJSJAbLBmL4U","refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjI1ODgxODgsInVzZXJfaWQiOjExNDE5NzA5NjkxMDM5NTgwMTYsInJlZnJlc2giOnRydWUsInZlcmlmaWVkIjp0cnVlfQ.HugRi5YvBJhoUAJaggOEfpiDdT0IRZyddzBZgFw8-5E","id":1141970969103958000,"name":"17866637565","photo":"http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi"}
 import '@/vender/gt.js';
 
 export default {

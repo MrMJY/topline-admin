@@ -48,8 +48,9 @@
         <el-button style="float: right; padding: 3px 0"
                    type="text">操作按钮</el-button>
       </div>
-      <el-table :data="articles"
-                border
+      <el-table border
+                v-loading="loading"
+                :data="articles"
                 class="list-table"
                 style="width: 100%">
         <el-table-column label="封面"
@@ -88,8 +89,10 @@
       </el-table>
       <el-pagination background
                      class="list-page"
+                     :disabled="loading"
                      layout="prev, pager, next"
-                     :total="1000">
+                     @current-change="handleCurrentChange"
+                     :total="total_count">
       </el-pagination>
     </el-card>
   </div>
@@ -101,6 +104,8 @@ export default {
   name: 'AppArticle',
   data () {
     return {
+      total_count: null,
+      loading: false,
       articles: [],
       form: {
         name: '',
@@ -119,14 +124,23 @@ export default {
     this.loadArticles();
   },
   methods: {
-    loadArticles () {
+    loadArticles (page = 1) {
+      this.loading = true;
       this.$http({
         method: 'GET',
-        url: '/articles'
+        url: '/articles',
+        params: {
+          page
+        }
       }).then(res => {
         console.log(res);
+        this.total_count = res.total_count;
         this.articles = res.results;
+        this.loading = false;
       });
+    },
+    handleCurrentChange (page) {
+      this.loadArticles(page);
     }
   }
 };
