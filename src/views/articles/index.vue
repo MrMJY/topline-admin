@@ -79,12 +79,15 @@
         <el-table-column label="操作"
                          align="center"
                          width="150">
-          <el-button type="success"
-                     size="mini"
-                     plain>编辑</el-button>
-          <el-button type="warning"
-                     size="mini"
-                     plain>删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="success"
+                       size="mini"
+                       plain>编辑</el-button>
+            <el-button type="warning"
+                       size="mini"
+                       plain
+                       @click="handleDelet(scope.row)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <el-pagination background
@@ -106,6 +109,7 @@ export default {
     return {
       total_count: null,
       loading: false,
+      page: 1,
       articles: [],
       form: {
         name: '',
@@ -140,7 +144,32 @@ export default {
       });
     },
     handleCurrentChange (page) {
+      this.page = page;
       this.loadArticles(page);
+    },
+    handleDelet (item) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const articleId = item.id;
+        this.$http({
+          method: 'DELETE',
+          url: `/articles/${articleId}`
+        }).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.loadArticles(this.page);
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 };
