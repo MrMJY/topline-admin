@@ -57,17 +57,23 @@ axios.interceptors.response.use(response => {
   }
 }, error => {
   const status = error.response.status;
-  switch (status) {
-    // token 令牌不正确
-    case 401:
-      // 删除本地错误的 user-info 数据
-      window.localStorage.removeItem('user-info');
-      // 跳转登录
-      router.push({
-        name: 'login'
-      });
-      break;
+  if (status) {
+    window.localStorage.removeItem('user-info');
+    router.push({
+      name: 'login'
+    });
   }
+  // switch (status) {
+  //   // token 令牌不正确
+  //   case 401:
+  //     // 删除本地错误的 user-info 数据
+  //     window.localStorage.removeItem('user-info');
+  //     // 跳转登录
+  //     router.push({
+  //       name: 'login'
+  //     });
+  //     break;
+  // }
   return Promise.reject(error);
 });
 

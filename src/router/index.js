@@ -39,7 +39,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // 开始进度条
   nprogress.start();
-  const userInfo = window.localStorage.getItem('user-info');
+  const userInfo = JSON.parse(window.localStorage.getItem('user-info'));
   // 如果不是登录页面
   if (to.path !== '/login') {
     // 判断是否登录

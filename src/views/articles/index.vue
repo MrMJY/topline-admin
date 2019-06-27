@@ -20,15 +20,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表:">
-          <el-select v-model="filters.channel_id"
-                     placeholder="请选择频道">
-            <el-option value=""
-                       label="全部">全部</el-option>
-            <el-option v-for="item in channels"
-                       :key="item.id"
-                       :label="item.name"
-                       :value="item.id + ''"></el-option>
-          </el-select>
+          <channels v-model="filters.channel_id"></channels>
         </el-form-item>
         <el-form-item label="时间选择:">
           <el-date-picker v-model="start_end_date"
@@ -114,9 +106,12 @@
 </template>
 
 <script>
-
+import Channels from '@/components/channels';
 export default {
   name: 'AppArticle',
+  components: {
+    Channels
+  },
   data () {
     return {
       total_count: null,
@@ -158,7 +153,6 @@ export default {
   },
   created () {
     this.loadArticles();
-    this.loadChannels();
   },
   methods: {
     loadArticles (page = 1) {
@@ -178,10 +172,12 @@ export default {
         this.loading = false;
       });
     },
+
     handleCurrentChange (page) {
       this.page = page;
       this.loadArticles(page);
     },
+
     handleDelet (item) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -201,14 +197,7 @@ export default {
         });
       });
     },
-    loadChannels () {
-      this.$http({
-        method: 'GET',
-        url: '/channels'
-      }).then(res => {
-        this.channels = res.channels;
-      });
-    },
+
     handleDate (date) {
       if (this.start_end_date) {
         this.filters.begin_pubdate = this.start_end_date[0];
@@ -218,6 +207,7 @@ export default {
         this.filters.end_pubdate = '';
       }
     },
+
     handleFilter () {
       const params = {};
       for (let key in this.filters) {
