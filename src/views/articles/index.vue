@@ -85,7 +85,8 @@
           <template slot-scope="scope">
             <el-button type="success"
                        size="mini"
-                       plain>编辑</el-button>
+                       plain
+                       @click="handleEdit(scope.row)">编辑</el-button>
             <el-button type="warning"
                        size="mini"
                        plain
@@ -147,8 +148,7 @@ export default {
         begin_pubdate: '',
         end_pubdate: ''
       },
-      filtersData: {},
-      channels: []
+      filtersData: {}
     };
   },
   created () {
@@ -218,6 +218,15 @@ export default {
       this.filtersData = params;
       this.page = 1;
       this.loadArticles();
+    },
+
+    handleEdit (item) {
+      this.$router.push({
+        name: 'publis-edit',
+        params: {
+          id: item.id + ''
+        }
+      });
     }
   }
 };

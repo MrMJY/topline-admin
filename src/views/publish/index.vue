@@ -3,7 +3,7 @@
   <el-card>
     <div class="f14"
          slot="header">
-      <span>发表文章</span>
+      <span>{{ isEdit ? '更新文章' : '发布文章' }}</span>
     </div>
     <el-form label-width="40px">
       <el-form-item size="small"
@@ -12,11 +12,18 @@
       </el-form-item>
       <el-form-item size="small"
                     label="内容">
-        <el-input v-model="publishData.content"></el-input>
+        <!-- bidirectional data binding（双向数据绑定） -->
+        <quill-editor v-model="publishData.content"
+                      ref="myQuillEditor"
+                      :options="editorOption">
+          <!-- @blur="onEditorBlur($event)"
+                      @focus="onEditorFocus($event)"
+                      @ready="onEditorReady($event)" -->
+        </quill-editor>
       </el-form-item>
       <el-form-item size="small"
                     label="封面">
-        <el-input></el-input>
+        <el-input>{{ isEdit }}</el-input>
       </el-form-item>
       <el-form-item size="small"
                     label="频道">
@@ -24,8 +31,10 @@
       </el-form-item>
       <el-form-item>
         <el-button type="success"
-                   @click.native="handlePublish(false)">发布</el-button>
+                   :loading="publishLoading"
+                   @click.native="handlePublish(false)">{{ isEdit ? '更新' : '发布' }}</el-button>
         <el-button type="primary"
+                   :loading="publishLoading"
                    @click.native="handlePublish(true)">存入草稿</el-button>
       </el-form-item>
     </el-form>
@@ -33,11 +42,19 @@
 </template>
 
 <script>
+// require styles
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
+
+import { quillEditor } from 'vue-quill-editor';
+
 import Channels from '@/components/channels';
 export default {
   name: 'Publish',
   components: {
-    Channels
+    Channels,
+    quillEditor
   },
   data () {
     return {
@@ -49,11 +66,30 @@ export default {
           images: []
         },
         channel_id: ''
-      }
+      },
+      editorOption: {
+        // some quill options
+      },
+      publishLoading: false
     };
+  },
+  computed: {
+    editor () {
+      return this.$refs.myQuillEditor.quill;
+    },
+    isEdit () {
+      return this.$route.params.id + '';
+    }
+  },
+  mounted () {
+    console.log('this is current quill instance object', this.editor);
+  },
+  created () {
+    this.isEdit && this.loadArticles(this.isEdit);
   },
   methods: {
     handlePublish (draft) {
+      this.publishLoading = true;
       this.$http({
         method: 'POST',
         url: '/articles',
@@ -66,16 +102,29 @@ export default {
           type: 'success',
           message: '发布成功'
         });
+        this.publishLoading = false;
       }).catch(err => {
         console.log(err);
         this.$message.error('发布失败');
+        this.publishLoading = false;
+      });
+    },
+
+    loadArticles (id) {
+      this.$http({
+        method: 'GET',
+        url: `/articles/${id}`
+      }).then(res => {
+        // const {title, content, }
+        this.publishData = res;
+        console.log(res);
       });
     }
   }
 };
 </script>
 <style lang="less" scoped>
-.el-form {
+.el-input {
   width: 40%;
 }
 </style>

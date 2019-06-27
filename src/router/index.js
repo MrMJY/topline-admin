@@ -21,6 +21,11 @@ const router = new Router({
       component: () => import('@/views/publish')
     },
     {
+      name: 'publis-edit',
+      path: '/publish_edit/:id',
+      component: () => import('@/views/publish')
+    },
+    {
       name: 'ArtcleList',
       path: '/article',
       component: () => import('@/views/articles')
