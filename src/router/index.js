@@ -39,20 +39,20 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // 开始进度条
   nprogress.start();
-  // const userInfo = window.localStorage.getItem('user-info');
+  const userInfo = window.localStorage.getItem('user-info');
   // 如果不是登录页面
   if (to.path !== '/login') {
     // 判断是否登录
-    // if (!userInfo) {
-    //   // 如果没有登录则跳转到登录页面
-    //   return next('/login');
-    // }
+    if (!userInfo) {
+      // 如果没有登录则跳转到登录页面
+      return next('/login');
+    }
     next();
   } else {
     // 如果已经登录了，则不允许继续访问登录页面
-    // if (userInfo) {
-    //   return next(false);
-    // }
+    if (userInfo) {
+      return next(false);
+    }
     next();
   }
 });

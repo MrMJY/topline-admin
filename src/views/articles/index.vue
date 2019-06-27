@@ -6,37 +6,44 @@
       <div slot="header"
            class="clearfix">
         <span>筛选条件</span>
-        <el-button style="float: right; padding: 3px 0"
-                   type="text">操作按钮</el-button>
       </div>
-      <el-form ref="form"
-               :model="form"
+      <el-form :model="filters"
                label-width="80px">
         <el-form-item label="文章状态:">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="线上品牌商赞助"></el-radio>
-            <el-radio label="线下场地免费"></el-radio>
+          <el-radio-group v-model="filters.status">
+            <el-radio label="">全部</el-radio>
+            <el-radio v-for="(item, index) in articleType"
+                      :key="item.label"
+                      :label="index + ''">
+              {{item.label}}
+            </el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表:">
-          <el-select v-model="form.region"
-                     placeholder="请选择活动区域">
-            <el-option label="区域一"
-                       value="shanghai"></el-option>
-            <el-option label="区域二"
-                       value="beijing"></el-option>
+          <el-select v-model="filters.channel_id"
+                     placeholder="请选择频道">
+            <el-option value=""
+                       label="全部">全部</el-option>
+            <el-option v-for="item in channels"
+                       :key="item.id"
+                       :label="item.name"
+                       :value="item.id + ''"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间选择:">
-          <el-date-picker v-model="value1"
+          <el-date-picker v-model="start_end_date"
                           type="daterange"
+                          value-format="yyyy-MM-dd"
+                          @change="handleDate"
                           range-separator="至"
                           start-placeholder="开始日期"
                           end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary"
+                     @click="handleFilter"
+                     :loading="loading">查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -44,9 +51,7 @@
     <el-card class="box-card article-list">
       <div slot="header"
            class="clearfix">
-        <span>共找到15条符合条件的内容</span>
-        <el-button style="float: right; padding: 3px 0"
-                   type="text">操作按钮</el-button>
+        <span>共找到<strong> {{ total_count }} </strong>条符合条件的内容</span>
       </div>
       <el-table border
                 v-loading="loading"
@@ -69,7 +74,13 @@
         <el-table-column prop="status"
                          align="center"
                          label="状态"
-                         width="60">
+                         width="100">
+          <template slot-scope="scope">
+            <el-tag :type="articleType[scope.row.status].type">
+              {{ articleType[scope.row.status].label }}
+            </el-tag>
+          </template>
+
         </el-table-column>
         <el-table-column prop="pubdate"
                          align="center"
@@ -93,6 +104,7 @@
       <el-pagination background
                      class="list-page"
                      :disabled="loading"
+                     :current-page="page"
                      layout="prev, pager, next"
                      @current-change="handleCurrentChange"
                      :total="total_count">
@@ -110,22 +122,43 @@ export default {
       total_count: null,
       loading: false,
       page: 1,
+      start_end_date: [],
       articles: [],
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+      articleType: [
+        {
+          type: 'info',
+          label: '草稿'
+        },
+        {
+          type: '',
+          label: '待审核'
+        },
+        {
+          type: 'success',
+          label: '审核通过'
+        },
+        {
+          type: 'warning',
+          label: '审核失败'
+        },
+        {
+          type: 'danger',
+          label: '已删除'
+        }
+      ],
+      filters: {
+        status: '',
+        channel_id: '',
+        begin_pubdate: '',
+        end_pubdate: ''
       },
-      value1: ''
+      filtersData: {},
+      channels: []
     };
   },
   created () {
     this.loadArticles();
+    this.loadChannels();
   },
   methods: {
     loadArticles (page = 1) {
@@ -134,10 +167,12 @@ export default {
         method: 'GET',
         url: '/articles',
         params: {
-          page
+          page,
+          ...this.filtersData
         }
       }).then(res => {
         console.log(res);
+        this.filtersData = {};
         this.total_count = res.total_count;
         this.articles = res.results;
         this.loading = false;
@@ -164,12 +199,35 @@ export default {
           });
           this.loadArticles(this.page);
         });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
       });
+    },
+    loadChannels () {
+      this.$http({
+        method: 'GET',
+        url: '/channels'
+      }).then(res => {
+        this.channels = res.channels;
+      });
+    },
+    handleDate (date) {
+      if (this.start_end_date) {
+        this.filters.begin_pubdate = this.start_end_date[0];
+        this.filters.end_pubdate = this.start_end_date[1];
+      } else {
+        this.filters.begin_pubdate = '';
+        this.filters.end_pubdate = '';
+      }
+    },
+    handleFilter () {
+      const params = {};
+      for (let key in this.filters) {
+        if (this.filters[key]) {
+          params[key] = this.filters[key];
+        }
+      }
+      this.filtersData = params;
+      this.page = 1;
+      this.loadArticles();
     }
   }
 };

@@ -64,8 +64,8 @@ export default {
   data () {
     return {
       formData: {
-        mobile: '',
-        code: '',
+        mobile: '17866637565',
+        code: '246810',
         agree: ''
       },
       rules: {
@@ -145,10 +145,9 @@ export default {
           });
           this.$router.push('/');
         })
-        .catch(err => {
+        .catch(() => {
           this.isLogin = false;
           this.login_info = true;
-          console.log(err);
         });
     },
     code () {

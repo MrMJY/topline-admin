@@ -22,6 +22,7 @@ import '@/styles/index.less';
 // Global axios defaults  全局默认设置
 // 给 axios 设置基础路径
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0';
+// axios.defaults.baseURL = 'http://toutiao.course.itcast.cn/mp/v1_0';
 // 设置 axios 请求的响应数据格式化
 axios.defaults.transformResponse = [function (data) {
   // Do whatever you want to transform the data
@@ -49,7 +50,11 @@ axios.interceptors.request.use(config => {
 
 // Axios 响应拦截器// 身份验证、错误处理
 axios.interceptors.response.use(response => {
-  return response.data.data;
+  if (typeof response.data === 'object' && response.data.data) {
+    return response.data.data;
+  } else {
+    return response;
+  }
 }, error => {
   const status = error.response.status;
   switch (status) {
