@@ -8,11 +8,11 @@
     <el-form label-width="40px">
       <el-form-item size="small"
                     label="标题">
-        <el-input></el-input>
+        <el-input v-model="publishData.title"></el-input>
       </el-form-item>
       <el-form-item size="small"
                     label="内容">
-        <el-input></el-input>
+        <el-input v-model="publishData.content"></el-input>
       </el-form-item>
       <el-form-item size="small"
                     label="封面">
@@ -20,11 +20,13 @@
       </el-form-item>
       <el-form-item size="small"
                     label="频道">
-        <channels v-model="channels_id"></channels>
+        <channels v-model="publishData.channel_id"></channels>
       </el-form-item>
       <el-form-item>
-        <el-button type="success">发布</el-button>
-        <el-button type="primary">存入草稿</el-button>
+        <el-button type="success"
+                   @click.native="handlePublish(false)">发布</el-button>
+        <el-button type="primary"
+                   @click.native="handlePublish(true)">存入草稿</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -39,11 +41,36 @@ export default {
   },
   data () {
     return {
-      channels_id: ''
+      publishData: {
+        title: '',
+        content: '',
+        cover: {
+          type: 0,
+          images: []
+        },
+        channel_id: ''
+      }
     };
   },
   methods: {
-
+    handlePublish (draft) {
+      this.$http({
+        method: 'POST',
+        url: '/articles',
+        params: {
+          draft
+        },
+        data: this.publishData
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '发布成功'
+        });
+      }).catch(err => {
+        console.log(err);
+        this.$message.error('发布失败');
+      });
+    }
   }
 };
 </script>
