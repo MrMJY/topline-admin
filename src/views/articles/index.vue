@@ -165,7 +165,6 @@ export default {
           ...this.filtersData
         }
       }).then(res => {
-        console.log(res);
         this.filtersData = {};
         this.total_count = res.total_count;
         this.articles = res.results;

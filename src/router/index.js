@@ -14,23 +14,23 @@ const router = new Router({
       name: 'AppHome',
       path: '',
       component: () => import('@/views/home')
-    },
-    {
+    }, {
       name: 'AppPublish',
       path: '/publish',
       component: () => import('@/views/publish')
-    },
-    {
+    }, {
       name: 'publis-edit',
       path: '/publish_edit/:id',
       component: () => import('@/views/publish')
-    },
-    {
+    }, {
       name: 'ArtcleList',
       path: '/article',
       component: () => import('@/views/articles')
-    }
-    ]
+    }, {
+      name: 'CommentList',
+      path: '/comment',
+      component: () => import('@/views/comment')
+    }]
   },
   {
     name: 'login',
