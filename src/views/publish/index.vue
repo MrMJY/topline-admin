@@ -3,7 +3,7 @@
   <el-card>
     <div class="f14"
          slot="header">
-      <span>{{ isEdit ? '更新文章' : '发布文章' }}</span>
+      <span>{{ clear }}文章</span>
     </div>
     <el-form label-width="40px">
       <el-form-item size="small"
@@ -12,18 +12,17 @@
       </el-form-item>
       <el-form-item size="small"
                     label="内容">
-        <!-- bidirectional data binding（双向数据绑定） -->
         <quill-editor v-model="publishData.content"
                       ref="myQuillEditor"
-                      :options="editorOption">
-          <!-- @blur="onEditorBlur($event)"
+                      :options="editorOption"
+                      @blur="onEditorBlur($event)"
                       @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)" -->
+                      @ready="onEditorReady($event)">
         </quill-editor>
       </el-form-item>
       <el-form-item size="small"
                     label="封面">
-        <el-input>{{ isEdit }}</el-input>
+        <el-input></el-input>
       </el-form-item>
       <el-form-item size="small"
                     label="频道">
@@ -32,7 +31,7 @@
       <el-form-item>
         <el-button type="success"
                    :loading="publishLoading"
-                   @click.native="handlePublish(false)">{{ isEdit ? '更新' : '发布' }}</el-button>
+                   @click.native="handlePublish(false)">{{ clear }}</el-button>
         <el-button type="primary"
                    :loading="publishLoading"
                    @click.native="handlePublish(true)">存入草稿</el-button>
@@ -70,27 +69,29 @@ export default {
       editorOption: {
         // some quill options
       },
-      publishLoading: false
+      publishLoading: false,
+      editing: true
     };
   },
   computed: {
     editor () {
+      // if (!this.isEdit) {
+      //   this.clearForm();
+      // }
       return this.$refs.myQuillEditor.quill;
     },
     isEdit () {
-      if (!this.$route.params.id) {
-        const publish = this.publishData;
-        for (let key in publish) {
-          if (typeof publish[key] === 'object') {
-            for (let keyIn in publish[key]) {
-              publish[key][keyIn] = '';
-            }
-          } else {
-            publish[key] = '';
-          }
-        }
-      }
       return this.$route.params.id;
+    },
+    clear () {
+      if (this.isEdit) {
+        return '更新';
+      } else {
+        if (this.editing) {
+          this.clearForm();
+        }
+        return '发布';
+      }
     }
   },
   mounted () {
@@ -102,24 +103,47 @@ export default {
   methods: {
     handlePublish (draft) {
       this.publishLoading = true;
-      this.$http({
-        method: 'POST',
-        url: '/articles',
-        params: {
-          draft
-        },
-        data: this.publishData
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '发布成功'
+      if (this.isEdit) {
+        this.$http({
+          method: 'PUT',
+          url: `/articles/${this.$route.params.id + ''}`,
+          params: {
+            draft
+          },
+          data: this.publishData
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '更新成功'
+          });
+          this.publishLoading = false;
+        }).catch((err) => {
+          console.log(err);
+          this.$message.error('更新失败');
+          this.publishLoading = false;
         });
-        this.publishLoading = false;
-      }).catch(err => {
-        console.log(err);
-        this.$message.error('发布失败');
-        this.publishLoading = false;
-      });
+      } else {
+        this.$http({
+          method: 'POST',
+          url: '/articles',
+          params: {
+            draft
+          },
+          data: this.publishData
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '发布成功'
+          });
+          this.clearForm();
+          this.editing = true;
+          this.publishLoading = false;
+        }).catch(err => {
+          console.log(err);
+          this.$message.error('发布失败');
+          this.publishLoading = false;
+        });
+      }
     },
 
     loadArticles (id) {
@@ -129,7 +153,24 @@ export default {
       }).then(res => {
         this.publishData = res;
       });
-    }
+    },
+
+    clearForm () {
+      this.editing = false;
+      const publish = this.publishData;
+      for (let key in publish) {
+        if (typeof publish[key] === 'object') {
+          publish[key].type = 0;
+          publish[key].images = [];
+        } else {
+          publish[key] = '';
+        }
+      }
+    },
+
+    onEditorBlur () { },
+    onEditorFocus () { },
+    onEditorReady () { }
   }
 };
 </script>
