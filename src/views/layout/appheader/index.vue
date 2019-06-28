@@ -12,7 +12,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>账户设置</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click.native="handleLogout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -29,7 +29,29 @@ export default {
   created () {
     this.userInfo = JSON.parse(window.localStorage.getItem('user-info'));
   },
-  methods: {}
+  methods: {
+    handleLogout () {
+      this.$confirm('您确定要退出此账户吗?', '退出提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.localStorage.removeItem('user-info');
+        this.$router.push({
+          name: 'login'
+        });
+        this.$message({
+          type: 'success',
+          message: '退出成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        });
+      });
+    }
+  }
 };
 </script>
 <style lang="less" scoped>

@@ -2,7 +2,6 @@
 <template>
   <el-select clearable
              :value="value"
-             label="请选择频道"
              placeholder="请选择频道"
              @change="handleChange">
     <el-option v-for="item in channels"

@@ -5,7 +5,8 @@
          slot="header">
       <span>{{ clear }}文章</span>
     </div>
-    <el-form label-width="40px">
+    <el-form label-width="40px"
+             v-loading="publishLoading">
       <el-form-item size="small"
                     label="标题">
         <el-input v-model="publishData.title"></el-input>
@@ -30,10 +31,8 @@
       </el-form-item>
       <el-form-item>
         <el-button type="success"
-                   :loading="publishLoading"
                    @click.native="handlePublish(false)">{{ clear }}</el-button>
         <el-button type="primary"
-                   :loading="publishLoading"
                    @click.native="handlePublish(true)">存入草稿</el-button>
       </el-form-item>
     </el-form>
