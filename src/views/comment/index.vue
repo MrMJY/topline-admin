@@ -64,7 +64,7 @@ export default {
           response_type: 'comment'
         }
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         res.results.forEach(item => {
           item.chang_status = false;
         });
@@ -84,7 +84,7 @@ export default {
 
     handleChangeStatus (item) {
       item.chang_status = true;
-      console.log(item);
+      // console.log(item);
       this.$http({
         method: 'PUT',
         url: '/comments/status',

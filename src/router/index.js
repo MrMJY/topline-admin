@@ -30,6 +30,10 @@ const router = new Router({
       name: 'CommentList',
       path: '/comment',
       component: () => import('@/views/comment')
+    }, {
+      name: 'Account',
+      path: '/account',
+      component: () => import('@/views/account')
     }]
   },
   {
