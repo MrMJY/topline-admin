@@ -4,14 +4,15 @@
     <el-col :span="14">江苏传智播客教育科技股份有限公司</el-col>
     <el-col :span="4"
             :offset="6">
-      <el-dropdown trigger="click">
+      <el-dropdown trigger="click"
+                   @userinfo="refreshUserInfo">
         <span class="el-dropdown-link">
           <img width="30"
                :src="userInfo.photo">
-          {{userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
+          {{ userInfo.name }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>账户设置</el-dropdown-item>
+          <el-dropdown-item @click.native="handleAccount">账户设置</el-dropdown-item>
           <el-dropdown-item @click.native="handleLogout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -27,7 +28,10 @@ export default {
     };
   },
   created () {
-    this.userInfo = JSON.parse(window.localStorage.getItem('user-info'));
+    this.refreshUserInfo();
+    this.$EventBus.$on('userinfo', () => {
+      this.refreshUserInfo();
+    });
   },
   methods: {
     handleLogout () {
@@ -50,6 +54,14 @@ export default {
           message: '已取消操作'
         });
       });
+    },
+
+    refreshUserInfo () {
+      this.userInfo = JSON.parse(window.localStorage.getItem('user-info'));
+    },
+
+    handleAccount () {
+      this.$router.push({ name: 'Account' });
     }
   }
 };

@@ -41,7 +41,17 @@
         </el-form>
       </el-col>
       <el-col :offset="2"
-              :span="4"></el-col>
+              :span="4">
+        <el-upload class="avatar-uploader"
+                   action=""
+                   :http-request="handleUpload">
+          <img v-if="userInfo.photo"
+               :src="userInfo.photo"
+               class="avatar">
+          <i v-else
+             class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-col>
     </el-row>
   </el-card>
 </template>
@@ -77,6 +87,7 @@ export default {
         url: '/user/profile',
         data: this.userInfo
       }).then(res => {
+        this.refreshUserInfo(res);
         this.$message({
           type: 'success',
           message: '保存成功'
@@ -87,9 +98,66 @@ export default {
         this.$message.error('保存失败');
         this.loading = false;
       });
+    },
+
+    handleUpload (uploadConfig) {
+      const formData = new FormData();
+      formData.append('photo', uploadConfig.file);
+      this.$http({
+        method: 'PATCH',
+        url: '/user/photo',
+        data: formData
+      }).then((res) => {
+        this.userInfo.photo = res.photo;
+        this.refreshUserInfo(res, 'photo');
+        this.$message({
+          type: 'success',
+          message: '上传成功'
+        });
+      }).catch(err => {
+        console.log(err);
+        this.$message.error('上传失败');
+      });
+    },
+
+    refreshUserInfo (res, config = 'all') {
+      const localUserInfo = JSON.parse(window.localStorage.getItem('user-info'));
+      if (config === 'all') {
+        for (let key in res) {
+          localUserInfo[key] = res[key];
+        }
+        window.localStorage.setItem('user-info', JSON.stringify(localUserInfo));
+      } else {
+        localUserInfo[config] = res[config];
+        window.localStorage.setItem('user-info', JSON.stringify(localUserInfo));
+      }
+      this.$EventBus.$emit('userinfo');
     }
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden !important;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>

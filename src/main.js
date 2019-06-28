@@ -81,6 +81,9 @@ axios.interceptors.response.use(response => {
 // 因为所有的组件都是 vue 的实例，可以继承 axios
 Vue.prototype.$http = axios;
 
+// 事件总线 --- 不同组件之间的通信
+Vue.prototype.$EventBus = new Vue();
+
 // 引入 ElementUI 组件库到 Vue 中
 Vue.use(ElementUI);
 
