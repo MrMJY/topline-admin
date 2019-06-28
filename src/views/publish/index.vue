@@ -78,7 +78,19 @@ export default {
       return this.$refs.myQuillEditor.quill;
     },
     isEdit () {
-      return this.$route.params.id + '';
+      if (!this.$route.params.id) {
+        const publish = this.publishData;
+        for (let key in publish) {
+          if (typeof publish[key] === 'object') {
+            for (let keyIn in publish[key]) {
+              publish[key][keyIn] = '';
+            }
+          } else {
+            publish[key] = '';
+          }
+        }
+      }
+      return this.$route.params.id;
     }
   },
   mounted () {
@@ -113,11 +125,9 @@ export default {
     loadArticles (id) {
       this.$http({
         method: 'GET',
-        url: `/articles/${id}`
+        url: `/articles/${id + ''}`
       }).then(res => {
-        // const {title, content, }
         this.publishData = res;
-        console.log(res);
       });
     }
   }
