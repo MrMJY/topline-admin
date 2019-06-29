@@ -4,12 +4,11 @@
     <el-col :span="14">江苏传智播客教育科技股份有限公司</el-col>
     <el-col :span="4"
             :offset="6">
-      <el-dropdown trigger="click"
-                   @userinfo="refreshUserInfo">
+      <el-dropdown trigger="click">
         <span class="el-dropdown-link">
           <img width="30"
-               :src="userInfo.photo">
-          {{ userInfo.name }}<i class="el-icon-arrow-down el-icon--right"></i>
+               :src="$store.state.user.photo">
+          {{ $store.state.user.name }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="handleAccount">账户设置</el-dropdown-item>
@@ -24,15 +23,9 @@
 export default {
   data () {
     return {
-      userInfo: null
     };
   },
-  created () {
-    this.refreshUserInfo();
-    this.$EventBus.$on('userinfo', () => {
-      this.refreshUserInfo();
-    });
-  },
+
   methods: {
     handleLogout () {
       this.$confirm('您确定要退出此账户吗?', '退出提示', {
@@ -54,10 +47,6 @@ export default {
           message: '已取消操作'
         });
       });
-    },
-
-    refreshUserInfo () {
-      this.userInfo = JSON.parse(window.localStorage.getItem('user-info'));
     },
 
     handleAccount () {

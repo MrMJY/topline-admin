@@ -42,6 +42,8 @@
       </el-col>
       <el-col :offset="2"
               :span="4">
+        <div class="f14"
+             style="margin-bottom:10px">用户头像</div>
         <el-upload class="avatar-uploader"
                    action=""
                    :http-request="handleUpload">
@@ -87,7 +89,9 @@ export default {
         url: '/user/profile',
         data: this.userInfo
       }).then(res => {
-        this.refreshUserInfo(res);
+        Object.assign(this.userInfo, res);
+        // 提交状态
+        this.$store.commit('updateUser', res);
         this.$message({
           type: 'success',
           message: '保存成功'
@@ -109,7 +113,7 @@ export default {
         data: formData
       }).then((res) => {
         this.userInfo.photo = res.photo;
-        this.refreshUserInfo(res, 'photo');
+        this.$store.commit('updateUser', { photo: res.photo });
         this.$message({
           type: 'success',
           message: '上传成功'
@@ -118,20 +122,6 @@ export default {
         console.log(err);
         this.$message.error('上传失败');
       });
-    },
-
-    refreshUserInfo (res, config = 'all') {
-      const localUserInfo = JSON.parse(window.localStorage.getItem('user-info'));
-      if (config === 'all') {
-        for (let key in res) {
-          localUserInfo[key] = res[key];
-        }
-        window.localStorage.setItem('user-info', JSON.stringify(localUserInfo));
-      } else {
-        localUserInfo[config] = res[config];
-        window.localStorage.setItem('user-info', JSON.stringify(localUserInfo));
-      }
-      this.$EventBus.$emit('userinfo');
     }
   }
 };

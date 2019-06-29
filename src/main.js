@@ -3,6 +3,8 @@ import axios from 'axios';
 import App from './App.vue';
 import router from './router';
 import ElementUI from 'element-ui';
+// 引入 vuex 集中式状态（数据）管理
+import store from './store';
 
 // 引入第三方脚本，处理超大数据，解决数据过大失去精准的问题
 import JSONbig from 'json-bigint';
@@ -81,9 +83,6 @@ axios.interceptors.response.use(response => {
 // 因为所有的组件都是 vue 的实例，可以继承 axios
 Vue.prototype.$http = axios;
 
-// 事件总线 --- 不同组件之间的通信
-Vue.prototype.$EventBus = new Vue();
-
 // 引入 ElementUI 组件库到 Vue 中
 Vue.use(ElementUI);
 
@@ -91,5 +90,6 @@ Vue.config.productionTip = false;
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app');
