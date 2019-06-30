@@ -137,6 +137,7 @@ export default {
           this.isLogin = false;
           this.login_info = false;
           window.localStorage.setItem('user-info', JSON.stringify(res));
+          this.$store.commit('user', res);
           this.$message({
             showClose: true,
             message: '登录成功',

@@ -6,7 +6,7 @@
       素材管理
     </div>
     <div class="title">
-      <el-radio-group v-model="radio4"
+      <el-radio-group v-model="selected"
                       size="mini">
         <el-radio-button label="全部"
                          @click.native="loadImages(false)"></el-radio-button>
@@ -50,7 +50,7 @@ export default {
   data () {
     return {
       images: [],
-      radio4: '全部',
+      selected: '全部',
       total_count: null
     };
   },
@@ -100,12 +100,20 @@ export default {
           type: 'success',
           message: '删除成功'
         });
-        this.loadImages();
+        if (this.selected === '全部') {
+          this.loadImages();
+        } else {
+          this.loadImages(true);
+        }
       });
     },
 
     handleSuccess () {
-      this.loadImages(false);
+      this.$message({
+        type: 'success',
+        message: '上传成功'
+      });
+      this.loadImages();
     }
   }
 };
