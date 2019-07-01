@@ -23,7 +23,22 @@
       </el-form-item>
       <el-form-item size="small"
                     label="封面">
-        <el-input></el-input>
+        <el-radio-group v-model="publishData.cover.type">
+          <el-radio :label="1">单图</el-radio>
+          <el-radio :label="3">三图</el-radio>
+          <el-radio :label="0">无图</el-radio>
+          <el-radio :label="-1">自动</el-radio>
+        </el-radio-group>
+        <template v-if="publishData.cover.type > 0">
+          <el-row>
+            <el-col :span="6"
+                    v-for="n in publishData.cover.type"
+                    :key="n"
+                    gutter="20">
+              <over-list v-model="publishData.cover.images[n - 1]"></over-list>
+            </el-col>
+          </el-row>
+        </template>
       </el-form-item>
       <el-form-item size="small"
                     label="频道">
@@ -45,6 +60,8 @@ import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
 
+import OverList from './component';
+
 import { quillEditor } from 'vue-quill-editor';
 
 import Channels from '@/components/channels';
@@ -52,7 +69,8 @@ export default {
   name: 'Publish',
   components: {
     Channels,
-    quillEditor
+    quillEditor,
+    OverList
   },
   data () {
     return {
@@ -60,7 +78,7 @@ export default {
         title: '',
         content: '',
         cover: {
-          type: 0,
+          type: 1,
           images: []
         },
         channel_id: ''
@@ -74,9 +92,6 @@ export default {
   },
   computed: {
     editor () {
-      // if (!this.isEdit) {
-      //   this.clearForm();
-      // }
       return this.$refs.myQuillEditor.quill;
     },
     isEdit () {
@@ -94,73 +109,73 @@ export default {
     }
   },
   mounted () {
-    console.log('this is current quill instance object', this.editor);
+    // console.log('this is current quill instance object', this.editor);
   },
   created () {
     this.isEdit && this.loadArticles(this.isEdit);
   },
   methods: {
-    handlePublish (draft) {
-      this.publishLoading = true;
-      if (this.isEdit) {
-        this.$http({
-          method: 'PUT',
-          url: `/articles/${this.$route.params.id + ''}`,
-          params: {
-            draft
-          },
-          data: this.publishData
-        }).then(() => {
+    async handlePublish (draft) {
+      try {
+        this.publishLoading = true;
+        if (this.isEdit) {
+          await this.$http({
+            method: 'PUT',
+            url: `/articles/${this.$route.params.id + ''}`,
+            params: {
+              draft
+            },
+            data: this.publishData
+          });
           this.$message({
             type: 'success',
             message: '更新成功'
           });
-          this.publishLoading = false;
-        }).catch((err) => {
-          console.log(err);
-          this.$message.error('更新失败');
-          this.publishLoading = false;
-        });
-      } else {
-        this.$http({
-          method: 'POST',
-          url: '/articles',
-          params: {
-            draft
-          },
-          data: this.publishData
-        }).then(() => {
+        } else {
+          await this.$http({
+            method: 'POST',
+            url: '/articles',
+            params: {
+              draft
+            },
+            data: this.publishData
+          });
           this.$message({
             type: 'success',
             message: '发布成功'
           });
-          this.clearForm();
           this.editing = true;
-          this.publishLoading = false;
-        }).catch(err => {
-          console.log(err);
+        }
+        this.publishLoading = false;
+      } catch (err) {
+        console.log(err);
+        if (this.isEdit) {
+          this.$message.error('更新失败');
+        } else {
           this.$message.error('发布失败');
-          this.publishLoading = false;
-        });
+        }
+        this.publishLoading = false;
       }
     },
 
-    loadArticles (id) {
-      this.$http({
+    async loadArticles (id) {
+      const res = await this.$http({
         method: 'GET',
         url: `/articles/${id + ''}`
-      }).then(res => {
-        this.publishData = res;
       });
+      this.publishData = res;
     },
 
     clearForm () {
       this.editing = false;
       const publish = this.publishData;
       for (let key in publish) {
+        if (key === 'id') {
+          continue;
+        }
         if (typeof publish[key] === 'object') {
-          publish[key].type = 0;
-          publish[key].images = [];
+          publish[key].type = 1;
+          publish[key].images[0] = '';
         } else {
           publish[key] = '';
         }
